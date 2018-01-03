@@ -31,20 +31,4 @@ public class LocacaoService {
 		
 		return locacao;
 	}
-
-	@Test
-	public void teste(){
-		//Cenario - O que eu preciso
-		LocacaoService service = new LocacaoService();
-		Usuario usuario = new Usuario("Thiago");
-		Filme filme = new Filme("Percy Jackson", 2, 15.50);
-				
-		//Acao
-		Locacao locacao = service.alugarFilme(usuario, filme);
-				
-		//Verificação
-		Assert.assertTrue(locacao.getValor() == 15.50);
-		Assert.assertTrue(DataUtils.isMesmaData(locacao.getDataLocacao(), new Date()));
-		Assert.assertTrue(DataUtils.isMesmaData(locacao.getDataRetorno(), DataUtils.obterDataComDiferencaDias(1)));
-	}
 }
