@@ -15,7 +15,7 @@ import br.ce.wcaquino.utils.DataUtils;
 public class LocacaoServiceTest {
 	
 	@Test
-	public void teste(){
+	public void testeLocacao(){
 		//Cenario - O que eu preciso
 		LocacaoService service = new LocacaoService();
 		Usuario usuario = new Usuario("Thiago");
@@ -25,7 +25,7 @@ public class LocacaoServiceTest {
 		Locacao locacao = service.alugarFilme(usuario, filme);
 				
 		//Verificação
-		Assert.assertTrue(locacao.getValor() == 15.50);
+		Assert.assertEquals(15.50, locacao.getValor(), 0.01);
 		Assert.assertTrue(DataUtils.isMesmaData(locacao.getDataLocacao(), new Date()));
 		Assert.assertTrue(DataUtils.isMesmaData(locacao.getDataRetorno(), DataUtils.obterDataComDiferencaDias(1)));
 	}
