@@ -18,6 +18,7 @@ import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ErrorCollector;
+import org.junit.rules.ExpectedException;
 
 import br.ce.wcaquino.entidades.Filme;
 import br.ce.wcaquino.entidades.Locacao;
@@ -29,8 +30,11 @@ public class LocacaoServiceTest {
 	@Rule
 	public ErrorCollector  error = new ErrorCollector();
 	
+	@Rule
+	public ExpectedException exception = ExpectedException.none();
+	
 	@Test
-	public void testeLocacao(){
+	public void testeLocacao() throws Exception{
 		
 		//Cenario - O que eu preciso
 		LocacaoService service = new LocacaoService();
@@ -38,27 +42,78 @@ public class LocacaoServiceTest {
 		Filme filme = new Filme("Percy Jackson", 2, 15.50);
 				
 		//Acao
-		Locacao locacao = service.alugarFilme(usuario, filme);
-				
-		//Verificação
-		assertEquals(15.50, locacao.getValor(), 0.01);
-		assertTrue(isMesmaData(locacao.getDataLocacao(), new Date()));
-		assertTrue(isMesmaData(locacao.getDataRetorno(), obterDataComDiferencaDias(1)));
+		Locacao locacao;
 		
-		// Assert That 
-		// Verifique que o valor da locacao é igual a 15.50
-		assertThat(locacao.getValor(), is(equalTo(15.50))); 
+			locacao = service.alugarFilme(usuario, filme);
+			
+			//Verificação
+			assertEquals(15.50, locacao.getValor(), 0.01);
+			assertTrue(isMesmaData(locacao.getDataLocacao(), new Date()));
+			assertTrue(isMesmaData(locacao.getDataRetorno(), obterDataComDiferencaDias(1)));
+			
+			// Assert That 
+			// Verifique que o valor da locacao é igual a 15.50
+			assertThat(locacao.getValor(), is(equalTo(15.50))); 
+			
+			// Verifique que o valor da locacao não é igual a 6
+			assertThat(locacao.getValor(), is(not(6)));
+			
+			
+			assertThat(isMesmaData(locacao.getDataLocacao(), new Date()), is(true));
+			assertThat(isMesmaData(locacao.getDataRetorno(), obterDataComDiferencaDias(1)), is(true));
+			
+			// Executa todos os teste, mesmo que de falha no primeiro
+			error.checkThat(locacao.getValor(), is(15.50));
+			error.checkThat(isMesmaData(locacao.getDataLocacao(), new Date()), is(true));
+			error.checkThat(isMesmaData(locacao.getDataRetorno(), obterDataComDiferencaDias(1)), is(true));
+	
+	}
+	
+	// 3 Formas para tratamento de exceções
+	
+	//Forma Elegante
+	@Test(expected=Exception.class) // Informa o teste que é esperado uma excecao
+	public void testLocacao_filmeSemEstoque() throws Exception {
+		//Cenario - O que eu preciso
+		LocacaoService service = new LocacaoService();
+		Usuario usuario = new Usuario("Thiago");
+		Filme filme = new Filme("Percy Jackson", 0, 15.50);
+						
+		//Acao
+		service.alugarFilme(usuario, filme);
+	}
+	
+	//Mais robusta
+	//Vantagem em cima da elegante eu consigo capturar e exception e exibir a mensagem dela
+	@Test
+	public void testLocacao_filmeSemEstoque2() {
+		//Cenario - O que eu preciso
+		LocacaoService service = new LocacaoService();
+		Usuario usuario = new Usuario("Thiago");
+		Filme filme = new Filme("Percy Jackson", 2, 15.50);
+						
+		//Acao
+		try {
+			service.alugarFilme(usuario, filme);
+			Assert.fail("Deveria ter lancado uma exception");
+		} catch (Exception e) {
+			assertThat(e.getMessage(), is("Filme sem estoque"));
+		}
+	}
+	
+	//Forma nova
+	@Test
+	public void testLocacao_filmeSemEstoque3() throws Exception {
+		//Cenario - O que eu preciso
+		LocacaoService service = new LocacaoService();
+		Usuario usuario = new Usuario("Thiago");
+		Filme filme = new Filme("Percy Jackson", 0, 15.50);
 		
-		// Verifique que o valor da locacao não é igual a 6
-		assertThat(locacao.getValor(), is(not(6)));
+		exception.expect(Exception.class); // Esperado que um exception seja lancado
+		exception.expectMessage("Filme sem estoque");
 		
+		//Acao
+		service.alugarFilme(usuario, filme);
 		
-		assertThat(isMesmaData(locacao.getDataLocacao(), new Date()), is(true));
-		assertThat(isMesmaData(locacao.getDataRetorno(), obterDataComDiferencaDias(1)), is(true));
-		
-		// Executa todos os teste, mesmo que de falha no primeiro
-		error.checkThat(locacao.getValor(), is(15.50));
-		error.checkThat(isMesmaData(locacao.getDataLocacao(), new Date()), is(true));
-		error.checkThat(isMesmaData(locacao.getDataRetorno(), obterDataComDiferencaDias(1)), is(true));
 	}
 }
