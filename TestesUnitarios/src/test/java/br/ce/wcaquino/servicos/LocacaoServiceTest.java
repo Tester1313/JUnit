@@ -150,6 +150,6 @@ public class LocacaoServiceTest {
 		//Acao
 		service.alugarFilme(usuario, null);
 		
-		System.out.println("Forma robusta");
+		System.out.println("Forma nova");
 	}
 }
