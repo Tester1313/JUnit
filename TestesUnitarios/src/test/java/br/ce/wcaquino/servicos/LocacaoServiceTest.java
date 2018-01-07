@@ -21,8 +21,10 @@ import org.hamcrest.CoreMatchers;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
+import org.junit.Assume;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ErrorCollector;
@@ -74,7 +76,9 @@ public class LocacaoServiceTest {
 	
 	@Test
 	public void deveAlugarFilme() throws Exception{
-
+		//Garante que o teste nao será executado somente aos sabados
+		Assume.assumeFalse(DataUtils.verificarDiaSemana(new Date(), Calendar.SATURDAY));
+		
 		//Cenario - O que eu preciso
 		Usuario usuario = new Usuario("Thiago");
 		List <Filme> filmes = Arrays.asList(new Filme("Percy Jackson", 1, 15.50));
@@ -254,7 +258,11 @@ public class LocacaoServiceTest {
 	}
 	
 	@Test
+	//@Ignore Notação pula o teste abaixo
 	public void DeveDevolverNaSegundaAoAlugarNoSabado() throws FilmeSemEstoqueException, LocadoraException {
+		//Garante que o teste será executado somente aos sabados
+		Assume.assumeTrue(DataUtils.verificarDiaSemana(new Date(), Calendar.SATURDAY));
+		
 		//Cenario
 		Usuario usuario = new Usuario("Thiago");
 		List <Filme> filmes = Arrays.asList(new Filme("Filme 1", 1, 6.0));
