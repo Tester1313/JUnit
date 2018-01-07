@@ -11,7 +11,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 import org.hamcrest.CoreMatchers;
 import org.junit.After;
@@ -73,12 +76,12 @@ public class LocacaoServiceTest {
 
 		//Cenario - O que eu preciso
 		Usuario usuario = new Usuario("Thiago");
-		Filme filme = new Filme("Percy Jackson", 2, 15.50);
-
+		List <Filme> filmes = Arrays.asList(new Filme("Percy Jackson", 1, 15.50));
+		
 		//Acao
 		Locacao locacao;
 
-		locacao = service.alugarFilme(usuario, filme);
+		locacao = service.alugarFilme(usuario, filmes);
 
 		//Verificação
 		assertEquals(15.50, locacao.getValor(), 0.01);
@@ -87,10 +90,10 @@ public class LocacaoServiceTest {
 
 		// Assert That 
 		// Verifique que o valor da locacao é igual a 15.50
-		assertThat(locacao.getValor(), is(equalTo(15.50))); 
+		//assertThat(locacao.getValor(), is(equalTo(15.50))); 
 
 		// Verifique que o valor da locacao não é igual a 6
-		assertThat(locacao.getValor(), is(not(6.0)));
+		//assertThat(locacao.getValor(), is(not(6.0)));
 
 
 		assertThat(isMesmaData(locacao.getDataLocacao(), new Date()), is(true));
@@ -110,12 +113,13 @@ public class LocacaoServiceTest {
 	public void testLocacao_filmeSemEstoque() throws Exception {
 		//Cenario - O que eu preciso
 		Usuario usuario = new Usuario("Thiago");
-		Filme filme = new Filme("Percy Jackson", 0, 15.50);
+		List <Filme> filmes = Arrays.asList(new Filme("Percy Jackson", 0, 15.50));
+		//filmes.add(filme2);
 
 		//Acao
-		service.alugarFilme(usuario, filme);
+		service.alugarFilme(usuario, filmes);
 
-		System.out.println("Forma elegante");
+		//System.out.println("Forma elegante");
 	}
 
 	//Mais robusta
@@ -155,11 +159,11 @@ public class LocacaoServiceTest {
 	@Test // Teste de verificação de usuario
 	public void testLocacao_UsuarioVazio() throws FilmeSemEstoqueException {
 		//Cenario
-		Filme filme = new Filme("Percy Jackson", 2, 15.50);
-
+		List <Filme> filmes = Arrays.asList(new Filme("Percy Jackson", 1, 15.50));
+		
 		//Acao
 		try {
-			service.alugarFilme(null, filme);
+			service.alugarFilme(null, filmes);
 			Assert.fail();
 		} catch (LocadoraException e) {
 			assertThat(e.getMessage(), is("Usuario Vazio"));
