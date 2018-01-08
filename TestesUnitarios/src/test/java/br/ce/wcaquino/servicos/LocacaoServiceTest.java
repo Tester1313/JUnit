@@ -191,7 +191,7 @@ public class LocacaoServiceTest {
 		//System.out.println("Forma nova");
 	}
 	
-	@Test
+	/*@Test -- Teste foi refatorado e colocado na classe calculoValorLocacaotest
 	public void devePagar75PctNoFilme3() throws FilmeSemEstoqueException, LocadoraException {
 		//Cenario
 		Usuario usuario = new Usuario("Thiago");
@@ -223,7 +223,7 @@ public class LocacaoServiceTest {
 	}
 	
 	@Test
-	public void devePagar75PctNoFilme5() throws FilmeSemEstoqueException, LocadoraException {
+	public void devePagar25PctNoFilme5() throws FilmeSemEstoqueException, LocadoraException {
 		//Cenario
 		Usuario usuario = new Usuario("Thiago");
 		List <Filme> filmes = Arrays.asList(new Filme("Filme 1", 1, 4.0),
@@ -255,7 +255,7 @@ public class LocacaoServiceTest {
 		
 		//Verificacao
 		assertThat(resultado.getValor(), is(14.0));
-	}
+	}*/
 	
 	@Test
 	//@Ignore Notação pula o teste abaixo
