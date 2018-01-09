@@ -279,7 +279,7 @@ public class LocacaoServiceTest {
 		assertThat(retorno.getDataRetorno(), caiNumaSegunda());
 	}
 	
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 		new BuilderMaster().gerarCodigoClasse(Locacao.class);
-	}
+	}*/
 }
