@@ -2,6 +2,9 @@
 // em tempo de execucao o Java entende que elas estarao no mesmo pacote, sendo assim juntas logicamente.
 package br.ce.wcaquino.servicos;
 
+import static br.ce.wcaquino.builders.FilmeBuilder.umFilme;
+import static br.ce.wcaquino.builders.FilmeBuilder.umFilmeSemEstoque;
+import static br.ce.wcaquino.builders.UsuarioBuilder.umUsuario;
 import static br.ce.wcaquino.matchers.MatchersProprios.caiNumaSegunda;
 import static br.ce.wcaquino.matchers.MatchersProprios.ehHoje;
 import static br.ce.wcaquino.matchers.MatchersProprios.ehHojeComDiferencaDias;
@@ -25,6 +28,7 @@ import org.junit.Test;
 import org.junit.rules.ErrorCollector;
 import org.junit.rules.ExpectedException;
 
+import br.ce.wcaquino.builders.FilmeBuilder;
 import br.ce.wcaquino.entidades.Filme;
 import br.ce.wcaquino.entidades.Locacao;
 import br.ce.wcaquino.entidades.Usuario;
@@ -75,8 +79,8 @@ public class LocacaoServiceTest {
 		Assume.assumeFalse(DataUtils.verificarDiaSemana(new Date(), Calendar.SATURDAY));
 		
 		//Cenario - O que eu preciso
-		Usuario usuario = new Usuario("Thiago");
-		List <Filme> filmes = Arrays.asList(new Filme("Percy Jackson", 1, 15.50));
+		Usuario usuario = umUsuario().agora();
+		List <Filme> filmes = Arrays.asList(umFilme().comValor().agora());
 		
 		//Acao
 		Locacao locacao;
@@ -113,8 +117,8 @@ public class LocacaoServiceTest {
 	@Test(expected = FilmeSemEstoqueException.class) // Informa o teste que é esperado uma excecao
 	public void naoDeveAlugarFilmeSemEstoque() throws Exception {
 		//Cenario - O que eu preciso
-		Usuario usuario = new Usuario("Thiago");
-		List <Filme> filmes = Arrays.asList(new Filme("Percy Jackson", 0, 15.50));
+		Usuario usuario = umUsuario().agora();
+		List <Filme> filmes = Arrays.asList(umFilmeSemEstoque().agora());
 		//filmes.add(filme2);
 
 		//Acao
@@ -160,7 +164,7 @@ public class LocacaoServiceTest {
 	@Test // Teste de verificação de usuario
 	public void naoDeveAlugarFilmeSemUsuario() throws FilmeSemEstoqueException {
 		//Cenario
-		List <Filme> filmes = Arrays.asList(new Filme("Percy Jackson", 1, 15.50));
+		List <Filme> filmes = Arrays.asList(umFilme().agora());
 		
 		//Acao
 		try {
@@ -176,7 +180,7 @@ public class LocacaoServiceTest {
 	@Test
 	public void naoDeveAlugarFilmeSemFilme() throws FilmeSemEstoqueException, LocadoraException {
 		//Cenario
-		Usuario usuario = new Usuario("Thiago");
+		Usuario usuario = umUsuario().agora();
 
 		exception.expect(LocadoraException.class);
 		exception.expectMessage("Filme Vazio");
@@ -260,8 +264,8 @@ public class LocacaoServiceTest {
 		Assume.assumeTrue(DataUtils.verificarDiaSemana(new Date(), Calendar.SATURDAY));
 		
 		//Cenario
-		Usuario usuario = new Usuario("Thiago");
-		List <Filme> filmes = Arrays.asList(new Filme("Filme 1", 1, 6.0));
+		Usuario usuario = umUsuario().agora();
+		List <Filme> filmes = Arrays.asList(umFilme().agora());
 		
 		//Acao
 		Locacao retorno = service.alugarFilme(usuario, filmes);
