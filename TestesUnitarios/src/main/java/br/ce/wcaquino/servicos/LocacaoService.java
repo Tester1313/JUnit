@@ -73,4 +73,8 @@ public class LocacaoService {
 		
 		return locacao;
 	}
+	
+	public void setLocacaoDAO(LocacaoDAO dao) {
+		this.dao = dao;
+	}
 }
