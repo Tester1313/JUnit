@@ -47,6 +47,7 @@ public class LocacaoServiceTest {
 	//Quase todos os teste utilizam essa instancia entao ela se tornou
 	// global e se encontra no Before
 	private LocacaoService service;
+	private SPCService spc;
 
 	@Rule
 	public ErrorCollector  error = new ErrorCollector();
@@ -58,8 +59,12 @@ public class LocacaoServiceTest {
 	@Before
 	public void setup() {
 		service = new LocacaoService();
+		
 		LocacaoDAO  dao = mock(LocacaoDAO.class);
 		service.setLocacaoDAO(dao);
+		
+		spc = Mockito.mock(SPCService.class);
+		service.setSPCService(spc);
 	}
 
 	//Caso adicionado aqui será executado apos os testes abaixo
@@ -189,7 +194,7 @@ public class LocacaoServiceTest {
 	public void naoDeveAlugarFilmeSemFilme() throws FilmeSemEstoqueException, LocadoraException {
 		//Cenario
 		Usuario usuario = umUsuario().agora();
-
+		
 		exception.expect(LocadoraException.class);
 		exception.expectMessage("Filme Vazio");
 
@@ -289,4 +294,24 @@ public class LocacaoServiceTest {
 	/*public static void main(String[] args) {
 		new BuilderMaster().gerarCodigoClasse(Locacao.class);
 	}*/
+	
+	@Test
+	public void naoDeveAlugarFilmeParaNegativadoSPC() throws FilmeSemEstoqueException, LocadoraException {
+		//cenario
+		Usuario usuario = umUsuario().agora();
+		Usuario usuario2 = umUsuario().comNome("uuuu").agora();
+		List<Filme> filmes = Arrays.asList(umFilme().agora());
+		
+		// Resposta padrao do mock boolean é falso
+		// o when é utilizado para alterar esse valor para
+		
+		// Quando spc.possuiNegativacao(usuario) entao retorne true
+		when(spc.possuiNegativacao(usuario)).thenReturn(true);
+		
+		exception.expect(LocadoraException.class);
+		exception.expectMessage("Usuário Negativado");
+		
+		//acao
+		service.alugarFilme(usuario, filmes);
+	}
 }

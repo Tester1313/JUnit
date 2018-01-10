@@ -15,6 +15,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 
 import br.ce.wcaquino.dao.LocacaoDAO;
 import br.ce.wcaquino.dao.LocacaoDAOFake;
@@ -29,6 +31,8 @@ public class CalculoValorLocacaoTest {
 
 	// DDT - Data Driven Test - Teste orientado a dados
 	private LocacaoService service;
+	
+	private SPCService spc;
 
 	// Notacoes que indicao a ordem do elementos do teste
 	@Parameter
@@ -41,10 +45,14 @@ public class CalculoValorLocacaoTest {
 	@Before
 	public void setup() {
 		service = new LocacaoService();
+		
 		LocacaoDAO  dao = mock(LocacaoDAO.class);
 		service.setLocacaoDAO(dao);
+		
+		spc = Mockito.mock(SPCService.class);
+		service.setSPCService(spc);
 	}
-
+	
 	private static Filme filme1 = umFilme().agora();
 	private static Filme filme2 = umFilme().agora();
 	private static Filme filme3 = umFilme().agora();
