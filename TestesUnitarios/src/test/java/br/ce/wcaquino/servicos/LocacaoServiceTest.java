@@ -17,7 +17,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
@@ -315,7 +318,7 @@ public class LocacaoServiceTest {
 		// o when é utilizado para alterar esse valor padrao
 
 		// Quando spc.possuiNegativacao(usuario) entao retorne true
-		when(spc.possuiNegativacao(usuario)).thenReturn(true);
+		when(spc.possuiNegativacao(Mockito.any(Usuario.class))).thenReturn(true);
 
 		//acao
 		try {
@@ -332,12 +335,14 @@ public class LocacaoServiceTest {
 	@Test
 	public void deveEnviarEmailParaLocacoesAtrasadas() {
 		//cenario
-		Usuario usuario = umUsuario().agora();
-		Usuario usuario2 = umUsuario().comNome("AAAA").agora();
-		List<Locacao> locacoes = asList(umLocacao()
-				.comUsuario(usuario)
-				.comDataRetorno(obterDataComDiferencaDias(-2))
-				.agora());;
+		Usuario usuario = umUsuario().comNome("Teste").agora();
+		Usuario usuario2 = umUsuario().comNome("Usuario em dia").agora();
+		Usuario usuario3 = umUsuario().comNome("Outro atrasado").agora();
+		List<Locacao> locacoes = asList(
+				umLocacao().atrasado().comUsuario(usuario).agora(),
+				umLocacao().comUsuario(usuario2).agora(),
+				umLocacao().atrasado().comUsuario(usuario3).agora(),
+				umLocacao().atrasado().comUsuario(usuario3).agora());;
 
 				//Quando dao.ObterLocacoesPendentes() entao retorne a lista locacoes
 				when(dao.ObterLocacoesPendentes()).thenReturn(locacoes);
@@ -346,6 +351,12 @@ public class LocacaoServiceTest {
 				service.notificarAtrasos();
 
 				//verificacao
+				//Verifique que serao realizados 2 execuções de email ao metodo de notificar atraso
+				//passando como parametro qualquer usuario
+				verify(email, times(3)).notificarAtraso(Mockito.any(Usuario.class));
 				verify(email).notificarAtraso(usuario);
+				verify(email, Mockito.atLeastOnce()).notificarAtraso(usuario3); // Times diz q teremos 2invocacoes
+				verify(email, never()).notificarAtraso(usuario2);
+				verifyNoMoreInteractions(email);
 	}
 }
