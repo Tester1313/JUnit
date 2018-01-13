@@ -15,8 +15,10 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 
 import br.ce.wcaquino.dao.LocacaoDAO;
 import br.ce.wcaquino.dao.LocacaoDAOFake;
@@ -30,9 +32,14 @@ import br.ce.wcaquino.excetion.LocadoraException;
 public class CalculoValorLocacaoTest {
 
 	// DDT - Data Driven Test - Teste orientado a dados
+	@InjectMocks
 	private LocacaoService service;
 	
+	@Mock
 	private SPCService spc;
+	
+	@Mock
+	private LocacaoDAO  dao;
 
 	// Notacoes que indicao a ordem do elementos do teste
 	@Parameter
@@ -44,13 +51,15 @@ public class CalculoValorLocacaoTest {
 
 	@Before
 	public void setup() {
-		service = new LocacaoService();
+		/*service = new LocacaoService();
 		
 		LocacaoDAO  dao = mock(LocacaoDAO.class);
 		service.setLocacaoDAO(dao);
 		
 		spc = Mockito.mock(SPCService.class);
-		service.setSPCService(spc);
+		service.setSPCService(spc);*/
+		
+		MockitoAnnotations.initMocks(this);
 	}
 	
 	private static Filme filme1 = umFilme().agora();

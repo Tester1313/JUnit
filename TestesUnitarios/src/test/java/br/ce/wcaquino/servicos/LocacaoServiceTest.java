@@ -35,7 +35,10 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ErrorCollector;
 import org.junit.rules.ExpectedException;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 
 import br.ce.wcaquino.builders.FilmeBuilder;
 import br.ce.wcaquino.builders.LocacaoBuilder;
@@ -53,9 +56,16 @@ public class LocacaoServiceTest {
 
 	//Quase todos os teste utilizam essa instancia entao ela se tornou
 	// global e se encontra no Before
+	@InjectMocks
 	private LocacaoService service;
+	
+	@Mock
 	private SPCService spc;
+	
+	@Mock
 	private LocacaoDAO  dao;
+	
+	@Mock
 	private EmailService email;
 
 	@Rule
@@ -67,7 +77,8 @@ public class LocacaoServiceTest {
 	// Caso adicionado aqui será iniciado antes dos testes abaixo
 	@Before
 	public void setup() {
-		service = new LocacaoService();
+		MockitoAnnotations.initMocks(this);
+		/*service = new LocacaoService();
 
 		dao = mock(LocacaoDAO.class);
 		service.setLocacaoDAO(dao);
@@ -76,7 +87,7 @@ public class LocacaoServiceTest {
 		service.setSPCService(spc);
 
 		email = mock(EmailService.class);
-		service.setEmailService(email);
+		service.setEmailService(email);*/
 	}
 
 	//Caso adicionado aqui será executado apos os testes abaixo
