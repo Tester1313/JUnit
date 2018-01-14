@@ -54,7 +54,7 @@ import br.ce.wcaquino.excetion.LocadoraException;
 import br.ce.wcaquino.utils.DataUtils;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({LocacaoService.class, DataUtils.class})
+@PrepareForTest({LocacaoService.class })
 public class LocacaoServiceTest {
 
 	//Quase todos os teste utilizam essa instancia entao ela se tornou
@@ -121,7 +121,13 @@ public class LocacaoServiceTest {
 		Usuario usuario = umUsuario().agora();
 		List <Filme> filmes = Arrays.asList(umFilme().comValor().agora());
 
-		PowerMockito.whenNew(Date.class).withNoArguments().thenReturn(DataUtils.obterData(28, 4, 2017));
+		//werMockito.whenNew(Date.class).withNoArguments().thenReturn(DataUtils.obterData(28, 4, 2017));
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(Calendar.DAY_OF_MONTH, 28);
+		calendar.set(Calendar.MONTH, Calendar.APRIL);
+		calendar.set(Calendar.YEAR, 2017);
+		PowerMockito.mockStatic(Calendar.class);
+		PowerMockito.when(Calendar.getInstance()).thenReturn(calendar);
 		
 		//Acao
 		Locacao locacao;
@@ -132,8 +138,8 @@ public class LocacaoServiceTest {
 
 		// Executa todos os teste, mesmo que de falha no primeiro
 		error.checkThat(locacao.getValor(), is(15.50));
-		error.checkThat(locacao.getDataLocacao(), ehHoje());
-		error.checkThat(locacao.getDataRetorno(), ehHojeComDiferencaDias(1));
+		//error.checkThat(locacao.getDataLocacao(), ehHoje());
+		//error.checkThat(locacao.getDataRetorno(), ehHojeComDiferencaDias(1));
 		error.checkThat(isMesmaData(locacao.getDataLocacao(), obterData(28, 4, 2017)), is(true));
 		error.checkThat(isMesmaData(locacao.getDataRetorno(), obterData(29, 4, 2017)), is(true));
 	}
@@ -297,8 +303,14 @@ public class LocacaoServiceTest {
 		
 		// Nesse ponto esta Mockando o Construtor do Date que nao tem nenhum paramentro
 		// Traducao: Quando eu solicitar uma nova instancia da classe date sem nenhum argumento
-		PowerMockito.whenNew(Date.class).withNoArguments().thenReturn(DataUtils.obterData(29, 4, 2017));
-
+		//PowerMockito.whenNew(Date.class).withNoArguments().thenReturn(DataUtils.obterData(29, 4, 2017));
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(Calendar.DAY_OF_MONTH, 29);
+		calendar.set(Calendar.MONTH, Calendar.APRIL);
+		calendar.set(Calendar.YEAR, 2017);
+		PowerMockito.mockStatic(Calendar.class);
+		PowerMockito.when(Calendar.getInstance()).thenReturn(calendar);
+		
 		//Acao
 		Locacao retorno = service.alugarFilme(usuario, filmes);
 
@@ -306,7 +318,11 @@ public class LocacaoServiceTest {
 		assertThat(retorno.getDataRetorno(), caiNumaSegunda());
 		
 		//Verificando se o construtor mockado foi chamado
-		PowerMockito.verifyNew(Date.class, Mockito.times(2)).withNoArguments();
+		//PowerMockito.verifyNew(Date.class, Mockito.times(2)).withNoArguments();
+		
+		//Verificar se o metodo statico foi chamado
+		PowerMockito.verifyStatic(Mockito.times(2));
+		Calendar.getInstance();
 	}
 
 	/*public static void main(String[] args) {
