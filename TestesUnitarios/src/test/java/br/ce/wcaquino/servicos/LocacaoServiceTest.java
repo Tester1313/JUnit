@@ -10,13 +10,13 @@ import static br.ce.wcaquino.matchers.MatchersProprios.caiNumaSegunda;
 import static br.ce.wcaquino.matchers.MatchersProprios.ehHoje;
 import static br.ce.wcaquino.matchers.MatchersProprios.ehHojeComDiferencaDias;
 import static br.ce.wcaquino.utils.DataUtils.isMesmaData;
+import static br.ce.wcaquino.utils.DataUtils.obterData;
 import static br.ce.wcaquino.utils.DataUtils.obterDataComDiferencaDias;
 import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -35,24 +35,26 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ErrorCollector;
 import org.junit.rules.ExpectedException;
+import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
-import br.ce.wcaquino.builders.FilmeBuilder;
-import br.ce.wcaquino.builders.LocacaoBuilder;
 import br.ce.wcaquino.dao.LocacaoDAO;
-import br.ce.wcaquino.dao.LocacaoDAOFake;
 import br.ce.wcaquino.entidades.Filme;
 import br.ce.wcaquino.entidades.Locacao;
 import br.ce.wcaquino.entidades.Usuario;
 import br.ce.wcaquino.excetion.FilmeSemEstoqueException;
 import br.ce.wcaquino.excetion.LocadoraException;
 import br.ce.wcaquino.utils.DataUtils;
-import buildermaster.BuilderMaster;
 
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({LocacaoService.class, DataUtils.class})
 public class LocacaoServiceTest {
 
 	//Quase todos os teste utilizam essa instancia entao ela se tornou
@@ -113,39 +115,27 @@ public class LocacaoServiceTest {
 	@Test
 	public void deveAlugarFilme() throws Exception{
 		//Garante que o teste nao será executado somente aos sabados
-		Assume.assumeFalse(DataUtils.verificarDiaSemana(new Date(), Calendar.SATURDAY));
+		//Assume.assumeFalse(DataUtils.verificarDiaSemana(new Date(), Calendar.SATURDAY));
 
 		//Cenario - O que eu preciso
 		Usuario usuario = umUsuario().agora();
 		List <Filme> filmes = Arrays.asList(umFilme().comValor().agora());
 
+		PowerMockito.whenNew(Date.class).withNoArguments().thenReturn(DataUtils.obterData(28, 4, 2017));
+		
 		//Acao
 		Locacao locacao;
 
 		locacao = service.alugarFilme(usuario, filmes);
 
 		//Verificação
-		assertEquals(15.50, locacao.getValor(), 0.01);
-		assertTrue(isMesmaData(locacao.getDataLocacao(), new Date()));
-		assertTrue(isMesmaData(locacao.getDataRetorno(), obterDataComDiferencaDias(1)));
-
-		// Assert That 
-		// Verifique que o valor da locacao é igual a 15.50
-		//assertThat(locacao.getValor(), is(equalTo(15.50))); 
-
-		// Verifique que o valor da locacao não é igual a 6
-		//assertThat(locacao.getValor(), is(not(6.0)));
-
-
-		//assertThat(isMesmaData(locacao.getDataLocacao(), new Date()), is(true));
-		//assertThat(isMesmaData(locacao.getDataRetorno(), obterDataComDiferencaDias(1)), is(true));
 
 		// Executa todos os teste, mesmo que de falha no primeiro
-		//error.checkThat(locacao.getValor(), is(15.50));
-		//error.checkThat(isMesmaData(locacao.getDataLocacao(), new Date()), is(true));
+		error.checkThat(locacao.getValor(), is(15.50));
 		error.checkThat(locacao.getDataLocacao(), ehHoje());
-		//error.checkThat(isMesmaData(locacao.getDataRetorno(), obterDataComDiferencaDias(1)), is(true));
 		error.checkThat(locacao.getDataRetorno(), ehHojeComDiferencaDias(1));
+		error.checkThat(isMesmaData(locacao.getDataLocacao(), obterData(28, 4, 2017)), is(true));
+		error.checkThat(isMesmaData(locacao.getDataRetorno(), obterData(29, 4, 2017)), is(true));
 	}
 
 	// 3 Formas para tratamento de exceções
@@ -296,23 +286,27 @@ public class LocacaoServiceTest {
 
 	@Test
 	//@Ignore Notação pula o teste abaixo
-	public void DeveDevolverNaSegundaAoAlugarNoSabado() throws FilmeSemEstoqueException, LocadoraException {
+	public void DeveDevolverNaSegundaAoAlugarNoSabado() throws Exception {
 		//Garante que o teste será executado somente aos sabados
-		Assume.assumeTrue(DataUtils.verificarDiaSemana(new Date(), Calendar.SATURDAY));
+		//Assume.assumeTrue(DataUtils.verificarDiaSemana(new Date(), Calendar.SATURDAY));
 
 		//Cenario
 		Usuario usuario = umUsuario().agora();
 		List <Filme> filmes = Arrays.asList(umFilme().agora());
+		
+		
+		// Nesse ponto esta Mockando o Construtor do Date que nao tem nenhum paramentro
+		// Traducao: Quando eu solicitar uma nova instancia da classe date sem nenhum argumento
+		PowerMockito.whenNew(Date.class).withNoArguments().thenReturn(DataUtils.obterData(29, 4, 2017));
 
 		//Acao
 		Locacao retorno = service.alugarFilme(usuario, filmes);
 
 		//verificacao
-		//boolean ehSegunda = DataUtils.verificarDiaSemana(retorno.getDataRetorno(), Calendar.MONDAY);
-		//assertTrue(ehSegunda);
-		//assertThat(retorno.getDataRetorno(), new DiaSemanaMatcher(Calendar.MONDAY));
-		//assertThat(retorno.getDataRetorno(), caiEm(Calendar.MONDAY));
 		assertThat(retorno.getDataRetorno(), caiNumaSegunda());
+		
+		//Verificando se o construtor mockado foi chamado
+		PowerMockito.verifyNew(Date.class, Mockito.times(2)).withNoArguments();
 	}
 
 	/*public static void main(String[] args) {

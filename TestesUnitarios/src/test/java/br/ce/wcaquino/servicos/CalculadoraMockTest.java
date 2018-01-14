@@ -49,7 +49,7 @@ public class CalculadoraMockTest {
 		doNothing().when(calcSpy).imprime();;
 		
 		// No mock caso ele nao saiba o que fazer irá retorna o valor padrao do mock
-		System.out.println(calcMock.somar(1, 2));
+		/*System.out.println(calcMock.somar(1, 2));
 		
 		// Já o Spy caso nao saiba o que fazer irá realizar a execução real do metodo, e nao funciona com interfaces somente com classes concretas
 		System.out.println(calcSpy.somar(1, 2));
@@ -57,7 +57,7 @@ public class CalculadoraMockTest {
 		System.out.println("Mock");
 		calcMock.imprime();
 		System.out.println("Spy");
-		calcSpy.imprime();
+		calcSpy.imprime();*/
 	}
 	
 	@Test
