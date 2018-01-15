@@ -39,6 +39,7 @@ import org.mockito.MockitoAnnotations;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.powermock.reflect.Whitebox;
 
 import br.ce.wcaquino.dao.LocacaoDAO;
 import br.ce.wcaquino.entidades.Filme;
@@ -424,5 +425,18 @@ public class LocacaoServiceTest {
 		//Verificando se o metodo foi chamado
 		PowerMockito.verifyPrivate(service).invoke( "calcularValorLocacao", filmes);
 		
+	}
+	
+	@Test
+	public void deveCalcularValorLocacao() throws Exception {
+		//cenario
+		List<Filme> filmes = Arrays.asList(umFilme().agora());
+		
+		//Acao
+		// WhiteBox consegue invocar metodos privador diretamente
+		Double valor = (Double) Whitebox.invokeMethod(service, "calcularValorLocacao", filmes);
+		
+		//Verificacao
+		Assert.assertThat(valor,is(4.0));
 	}
 }
