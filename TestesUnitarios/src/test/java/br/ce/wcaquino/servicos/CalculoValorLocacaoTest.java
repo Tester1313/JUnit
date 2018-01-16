@@ -1,6 +1,8 @@
 package br.ce.wcaquino.servicos;
 
 import static br.ce.wcaquino.builders.FilmeBuilder.umFilme;
+import static br.ce.wcaquino.servicos.CalculadoraTest.ordem;
+import static java.lang.Thread.sleep;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
@@ -9,6 +11,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -60,6 +64,18 @@ public class CalculoValorLocacaoTest {
 		service.setSPCService(spc);*/
 		
 		MockitoAnnotations.initMocks(this);
+		System.out.println("Iniciando 3");
+		CalculadoraTest.ordem.append("3");
+	}
+	
+	@After
+	public void tearDown() {
+		System.out.println("finalizando 3");
+	}
+	
+	@AfterClass
+	public static void tearDownClass() {
+		System.out.println(ordem.toString());
 	}
 	
 	private static Filme filme1 = umFilme().agora();
@@ -108,9 +124,11 @@ public class CalculoValorLocacaoTest {
 	}
 
 	@Test
-	public void deveCalcularValorLocacaoConsiderandoDescontos() throws FilmeSemEstoqueException, LocadoraException {
+	public void deveCalcularValorLocacaoConsiderandoDescontos() throws FilmeSemEstoqueException, LocadoraException, InterruptedException {
 		//Cenario
 		Usuario usuario = new Usuario("Thiago");
+		
+		sleep(5000);
 
 		//Acao
 		Locacao resultado = service.alugarFilme(usuario, filmes);

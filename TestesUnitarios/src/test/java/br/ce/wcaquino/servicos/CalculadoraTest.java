@@ -3,6 +3,7 @@ package br.ce.wcaquino.servicos;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,7 +13,6 @@ import org.junit.runners.BlockJUnit4ClassRunner;
 import br.ce.wcaquino.excetion.NaoPodeDividirPorZeroException;
 import br.ce.wcaquino.runners.ParallelRunner;
 
-@RunWith(ParallelRunner.class)
 public class CalculadoraTest {
 
 	// TDD seria o desenvolvimento baseados em teste
@@ -20,17 +20,24 @@ public class CalculadoraTest {
 	// 2° Codifica o programa
 	// 3° Refatora o codigo
 	
+	public static StringBuffer ordem = new StringBuffer();
 	private Calculadora calc;
 	
 	@Before
 	public void setup() {
 		calc = new Calculadora();
 		System.out.println("iniciando");
+		ordem.append("1");
 	}
 	
 	@After
 	public void tearDown() {
 		System.out.println("finalizando");
+	}
+	
+	@AfterClass
+	public static void tearDownClass() {
+		System.out.println(ordem.toString());
 	}
 	
 	@Test

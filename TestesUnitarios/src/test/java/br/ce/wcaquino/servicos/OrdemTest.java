@@ -16,11 +16,11 @@ public class OrdemTest {
 	
 	@Test
 	public void inicia() {
-		contador = 1;
+		contador = 0;
 	}
 	
 	@Test
 	public void verifica() {
-		assertEquals(1, contador);
+		assertEquals(0, contador);
 	}
 }

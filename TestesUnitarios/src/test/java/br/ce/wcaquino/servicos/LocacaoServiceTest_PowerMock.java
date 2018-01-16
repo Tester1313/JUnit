@@ -9,6 +9,7 @@ import static br.ce.wcaquino.builders.UsuarioBuilder.umUsuario;
 import static br.ce.wcaquino.matchers.MatchersProprios.caiNumaSegunda;
 import static br.ce.wcaquino.matchers.MatchersProprios.ehHoje;
 import static br.ce.wcaquino.matchers.MatchersProprios.ehHojeComDiferencaDias;
+import static br.ce.wcaquino.servicos.CalculadoraTest.ordem;
 import static br.ce.wcaquino.utils.DataUtils.isMesmaData;
 import static br.ce.wcaquino.utils.DataUtils.obterData;
 import static java.util.Arrays.asList;
@@ -25,6 +26,8 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
+import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -79,6 +82,18 @@ public class LocacaoServiceTest_PowerMock {
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
 		service = PowerMockito.spy(service);
+		System.out.println("Iniciando 4");
+		ordem.append("4");
+	}
+	
+	@After
+	public void tearDown() {
+		System.out.println("finalizando 4");
+	}
+	
+	@AfterClass
+	public static void tearDownClass() {
+		System.out.println(ordem.toString());
 	}
 
 	//Caso adicionado aqui será executado apos os testes abaixo

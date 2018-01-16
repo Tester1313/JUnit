@@ -9,6 +9,7 @@ import static br.ce.wcaquino.builders.UsuarioBuilder.umUsuario;
 import static br.ce.wcaquino.matchers.MatchersProprios.caiNumaSegunda;
 import static br.ce.wcaquino.matchers.MatchersProprios.ehHoje;
 import static br.ce.wcaquino.matchers.MatchersProprios.ehHojeComDiferencaDias;
+import static br.ce.wcaquino.servicos.CalculadoraTest.ordem;
 import static br.ce.wcaquino.utils.DataUtils.isMesmaData;
 import static br.ce.wcaquino.utils.DataUtils.obterData;
 import static java.util.Arrays.asList;
@@ -24,6 +25,7 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -74,6 +76,7 @@ public class LocacaoServiceTest {
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
+		ordem.append("2");
 	}
 
 	//Caso adicionado aqui será executado apos os testes abaixo
@@ -95,6 +98,10 @@ public class LocacaoServiceTest {
 		System.out.println("AfterClass");
 	}*/
 
+	@AfterClass
+	public static void teardownClass() {
+		System.out.println(ordem.toString());
+	}
 	@Test
 	public void deveAlugarFilme() throws Exception{
 		//Garante que o teste nao será executado somente aos sabados
