@@ -2,12 +2,17 @@ package br.ce.wcaquino.servicos;
 
 import static org.junit.Assert.assertEquals;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.BlockJUnit4ClassRunner;
 
 import br.ce.wcaquino.excetion.NaoPodeDividirPorZeroException;
+import br.ce.wcaquino.runners.ParallelRunner;
 
+@RunWith(ParallelRunner.class)
 public class CalculadoraTest {
 
 	// TDD seria o desenvolvimento baseados em teste
@@ -20,6 +25,12 @@ public class CalculadoraTest {
 	@Before
 	public void setup() {
 		calc = new Calculadora();
+		System.out.println("iniciando");
+	}
+	
+	@After
+	public void tearDown() {
+		System.out.println("finalizando");
 	}
 	
 	@Test
